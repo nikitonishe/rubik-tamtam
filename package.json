@@ -1,0 +1,36 @@
+{
+  "name": "rubik-tamtam",
+  "version": "1.0.0",
+  "description": "TamTam Bot Api kubik for the Rubik application system",
+  "main": "classes/TamTam.js",
+  "license": "Apache-2.0",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nikitonishe/rubik-tamtam.git"
+  },
+  "keywords": [
+    "rubik",
+    "kubik",
+    "tamtam",
+    "bots"
+  ],
+  "scripts": {
+    "test": "jest",
+    "watch": "jest --watch",
+    "lint": "eslint ./"
+  },
+  "dependencies": {
+    "form-data": "^4.0.0",
+    "lodash": "^4.17.21",
+    "node-fetch": "^2.6.1"
+  },
+  "peerDependencies": {
+    "rubik-main": "^2.2.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.4.1",
+    "jest": "^27.4.5",
+    "rubik-main": "^2.3.2"
+  }
+}
