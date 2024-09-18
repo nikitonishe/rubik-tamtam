@@ -2,10 +2,11 @@ const { Kubik } = require('rubik-main');
 const FormData = require('form-data');
 const fetch = require('node-fetch');
 const isObject = require('lodash/isObject');
+const set = require('lodash/set');
 
 const methods = require('./TamTam/methods');
 
-const TamTamError = require('../errors/TamTamError');
+const TamTamError = require('../errors/TamTam');
 
 const DEFAULT_HOST = 'https://botapi.tamtam.chat/';
 
@@ -20,6 +21,8 @@ class TamTam extends Kubik {
     super(...arguments);
     this.token = token || null;
     this.host = host || null;
+
+    this.generateMethods();
   }
 
   /**
@@ -35,14 +38,14 @@ class TamTam extends Kubik {
     this.host = this.host || options.host || DEFAULT_HOST;
   }
 
-  getUrl(name, token, host) {
+  getUrl(urlPath, token, host) {
     if (!token) token = this.token;
     if (!host) host = this.host;
 
     if (!token) throw new TypeError('token is not defined');
     if (!host) throw new TypeError('host is not defined');
 
-    return `${host}bot${token}/${name}`;
+    return `${host}${urlPath}?access_token=${token}`;
   }
 
   /**
@@ -53,38 +56,52 @@ class TamTam extends Kubik {
    * @param  {String} [host=this.host] хост API Телеграма
    * @return {Promise<Object>} ответ от Телеграма
    */
-  async request(name, body, token, host) {
+  async request({ path, body, method, token, host }) {
     const headers = {};
 
-    if (body instanceof FormData) {
-      Object.assign(headers, body.getHeaders());
-    } else if (isObject(body)) {
-      body = JSON.stringify(body);
-      headers['Content-Type'] = 'application/json';
+    if (body) {
+      if (body instanceof FormData) {
+        Object.assign(headers, body.getHeaders());
+      } else if (isObject(body)) {
+        body = JSON.stringify(body);
+        headers['Content-Type'] = 'application/json';
+      }
+      if (!method) method = 'POST';
+    } else {
+      if (!method) method = 'GET';
     }
-    const url = this.getUrl(name, token, host);
-    const request = await fetch(url, { method: 'POST', body, headers });
 
-    const result = await request.json();
+    const url = this.getUrl(path, token, host);
+    const request = await fetch(url, { method, body, headers });
 
-    if (!result.ok) throw new TamTamError(result.description);
+    let result = await request.text();
+    try {
+      result = JSON.parse(result);
+    } catch (err) {
+      throw new TamTamError(`invalid response body: ${result}`);
+    }
+
     return result;
+  }
+
+  generateMethods() {
+    methods.forEach(({ method, path }) => {
+      const methodFunction = (options) => {
+        if (!options) options = {};
+        const { body, pathParams, token, host, method } = options;
+        let urlPath = path;
+        if (path instanceof Function) {
+          urlPath = path(pathParams);
+        }
+
+        return this.request({ path: urlPath, body, method, token, host });
+      };
+
+      set(this, method, methodFunction);
+    });
   }
 }
 
-// Перебираем список имен методов API,
-// создаем методы класса и внедряем их в прототип
-methods.forEach((name) => {
-  // Если мы переопределили поведение метода в классе по какой-то причине,
-  // то не нужно ничего переписывать в прототипе
-  if (TamTam.prototype[name]) return;
-  TamTam.prototype[name] = async function(body, token, host) {
-    return this.request(name, body, token, host);
-  };
-});
-
-// Чтобы не создавать при каждой инициализации класса,
-// пишем значения имени и зависимостей в протип
 TamTam.prototype.dependencies = Object.freeze(['config']);
 TamTam.prototype.name = 'tamtam';
 

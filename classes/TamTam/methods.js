@@ -1,3 +1,17 @@
-module.exports = {
-  subscribe: { path: 'subscribe' }
-};
+module.exports = [
+  { method: 'me', path: 'me' },
+  { method: 'chats', path: 'chats' },
+  { method: 'chats.chatlink', path: ({ chatlink }) => `chats/${chatlink}` },
+  { method: 'chats.chatId', path: ({ chatId }) => `chats/${chatId}` },
+  { method: 'chats.chatId.actions', path: ({ chatId }) => `chats/${chatId}/actions` },
+  { method: 'chats.chatId.pin', path: ({ chatId }) => `chats/${chatId}/pin` },
+  { method: 'chats.chatId.members', path: ({ chatId }) => `chats/${chatId}/members` },
+  { method: 'chats.chatId.members.me', path: ({ chatId }) => `chats/${chatId}/members/me` },
+  { method: 'chats.chatId.members.admins', path: ({ chatId }) => `chats/${chatId}/members/admins` },
+  { method: 'messages', path: 'messages' },
+  { method: 'messages', path: ({ messageId }) => `messages/${messageId}'` },
+  { method: 'answers', path: 'answers' },
+  { method: 'answers.constructor', path: 'answers/constructor' },
+  { method: 'subscribe', path: 'subscribe' },
+  { method: 'uploads', path: 'uploads' },
+];
