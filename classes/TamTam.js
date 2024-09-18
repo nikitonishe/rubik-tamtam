@@ -11,10 +11,10 @@ const TamTamError = require('../errors/TamTam');
 const DEFAULT_HOST = 'https://botapi.tamtam.chat/';
 
 /**
- * Кубик для запросов к API ботов Телеграма
+ * Кубик для запросов к API ботов TamTam
  * @class
  * @prop {String} [token] токен для доступа к API
- * @prop {String} [host=DEFAULT_HOST] адрес API Телеграма
+ * @prop {String} [host=DEFAULT_HOST] адрес API TamTam
  */
 class TamTam extends Kubik {
   constructor(token, host) {
@@ -49,12 +49,12 @@ class TamTam extends Kubik {
   }
 
   /**
-   * Сделать запрос к API Ботов Телеграма
+   * Сделать запрос к API Ботов TamTam
    * @param  {String} name  имя метода
    * @param  {Object|String} body тело запроса
    * @param  {String} [token=this.token] токен для запроса
-   * @param  {String} [host=this.host] хост API Телеграма
-   * @return {Promise<Object>} ответ от Телеграма
+   * @param  {String} [host=this.host] хост API TamTam
+   * @return {Promise<Object>} ответ от TamTam
    */
   async request({ path, body, method, token, host }) {
     const headers = {};
