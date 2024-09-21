@@ -12,6 +12,6 @@ module.exports = [
   { method: 'messages', path: ({ messageId }) => `messages/${messageId}'` },
   { method: 'answers', path: 'answers' },
   { method: 'answers.constructor', path: 'answers/constructor' },
-  { method: 'subscribe', path: 'subscribe' },
+  { method: 'subscriptions', path: 'subscriptions' },
   { method: 'uploads', path: 'uploads' },
 ];
