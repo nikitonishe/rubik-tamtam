@@ -77,13 +77,17 @@ class TamTam extends Kubik {
     }
 
     const url = this.getUrl(path, queryParams, token, host);
-    const request = await fetch(url, { method, body, headers });
+    const response = await fetch(url, { method, body, headers });
 
-    let result = await request.text();
+    let result = await response.text();
     try {
       result = JSON.parse(result);
     } catch (err) {
       throw new TamTamError(`invalid response body: ${result}`);
+    }
+
+    if (response.status !== 200) {
+      throw new TamTamError(`status is not 200. ${result.message}`);
     }
 
     return result;
