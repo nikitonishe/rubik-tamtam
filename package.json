@@ -1,6 +1,6 @@
 {
   "name": "rubik-tamtam",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "TamTam Bot Api kubik for the Rubik application system",
   "main": "classes/TamTam.js",
   "license": "Apache-2.0",
