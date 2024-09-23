@@ -9,7 +9,7 @@ module.exports = [
   { method: 'chats.chatId.members.me', path: ({ chatId }) => `chats/${chatId}/members/me` },
   { method: 'chats.chatId.members.admins', path: ({ chatId }) => `chats/${chatId}/members/admins` },
   { method: 'messages', path: 'messages' },
-  { method: 'messages', path: ({ messageId }) => `messages/${messageId}'` },
+  { method: 'messages.messageId', path: ({ messageId }) => `messages/${messageId}'` },
   { method: 'answers', path: 'answers' },
   { method: 'answers.constructor', path: 'answers/constructor' },
   { method: 'subscriptions', path: 'subscriptions' },

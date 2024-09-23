@@ -1,4 +1,5 @@
 const { Kubik } = require('rubik-main');
+const querystring = require('querystring');
 const FormData = require('form-data');
 const fetch = require('node-fetch');
 const isObject = require('lodash/isObject');
@@ -38,14 +39,18 @@ class TamTam extends Kubik {
     this.host = this.host || options.host || DEFAULT_HOST;
   }
 
-  getUrl(urlPath, token, host) {
+  getUrl(urlPath, queryParams, token, host) {
     if (!token) token = this.token;
     if (!host) host = this.host;
 
     if (!token) throw new TypeError('token is not defined');
     if (!host) throw new TypeError('host is not defined');
 
-    return `${host}${urlPath}?access_token=${token}`;
+    if (!queryParams) queryParams = {};
+    queryParams.access_token = token;
+
+
+    return `${host}${urlPath}?${querystring.stringify(queryParams)}`;
   }
 
   /**
@@ -56,7 +61,7 @@ class TamTam extends Kubik {
    * @param  {String} [host=this.host] хост API TamTam
    * @return {Promise<Object>} ответ от TamTam
    */
-  async request({ path, body, method, token, host }) {
+  async request({ path, body, method, token, host, queryParams }) {
     const headers = {};
 
     if (body) {
@@ -71,7 +76,7 @@ class TamTam extends Kubik {
       if (!method) method = 'GET';
     }
 
-    const url = this.getUrl(path, token, host);
+    const url = this.getUrl(path, queryParams, token, host);
     const request = await fetch(url, { method, body, headers });
 
     let result = await request.text();
@@ -88,13 +93,13 @@ class TamTam extends Kubik {
     methods.forEach(({ method, path }) => {
       const methodFunction = (options) => {
         if (!options) options = {};
-        const { body, pathParams, token, host, method } = options;
+        const { body, pathParams, token, host, method, queryParams } = options;
         let urlPath = path;
         if (path instanceof Function) {
           urlPath = path(pathParams);
         }
 
-        return this.request({ path: urlPath, body, method, token, host });
+        return this.request({ path: urlPath, body, method, token, host, queryParams });
       };
 
       set(this, method, methodFunction);
