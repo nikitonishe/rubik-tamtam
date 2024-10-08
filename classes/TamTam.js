@@ -64,6 +64,7 @@ class TamTam extends Kubik {
   async request({ path, body, method, token, host, queryParams }) {
     const headers = {};
 
+    const needLogSendAttachments = this.config.logSendAttachments && body.attachments?.length;
     if (body) {
       if (body instanceof FormData) {
         Object.assign(headers, body.getHeaders());
@@ -77,9 +78,20 @@ class TamTam extends Kubik {
     }
 
     const url = this.getUrl(path, queryParams, token, host);
+    if (needLogSendAttachments) {
+      console.info('Send attachments in TamTam');
+      console.info(url);
+      console.info(method);
+      console.info(headers);
+      console.info(body);
+    }
     const response = await fetch(url, { method, body, headers });
 
     let result = await response.text();
+    if (needLogSendAttachments) {
+      console.info('Send attachments in TamTam result');
+      console.info(result);
+    }
     try {
       result = JSON.parse(result);
     } catch (err) {
