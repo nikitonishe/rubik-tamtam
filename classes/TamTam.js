@@ -65,7 +65,7 @@ class TamTam extends Kubik {
   async request({ path, body, method, token, host, queryParams }) {
     const headers = {};
 
-    const needLogSendAttachments = this.logSendAttachments && body.attachments?.length;
+    const needLogSendAttachments = this.logSendAttachments && body?.attachments?.length;
     if (body) {
       if (body instanceof FormData) {
         Object.assign(headers, body.getHeaders());
