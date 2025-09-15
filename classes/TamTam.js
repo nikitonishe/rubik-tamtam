@@ -40,7 +40,7 @@ class TamTam extends Kubik {
     this.logSendAttachments = options.logSendAttachments;
   }
 
-  getUrl(urlPath, queryParams, token, host) {
+  getUrl(urlPath, queryParams, host) {
     if (!token) token = this.token;
     if (!host) host = this.host;
 
@@ -48,8 +48,6 @@ class TamTam extends Kubik {
     if (!host) throw new TypeError('host is not defined');
 
     if (!queryParams) queryParams = {};
-    queryParams.access_token = token;
-
 
     return `${host}${urlPath}?${querystring.stringify(queryParams)}`;
   }
@@ -63,7 +61,9 @@ class TamTam extends Kubik {
    * @return {Promise<Object>} ответ от TamTam
    */
   async request({ path, body, method, token, host, queryParams }) {
-    const headers = {};
+    const headers = {
+      Authorization: token
+    };
 
     const needLogSendAttachments = this.logSendAttachments && body?.attachments?.length;
     if (body) {
@@ -78,7 +78,7 @@ class TamTam extends Kubik {
       if (!method) method = 'GET';
     }
 
-    const url = this.getUrl(path, queryParams, token, host);
+    const url = this.getUrl(path, queryParams, host);
     if (needLogSendAttachments) {
       console.info('Send attachments in TamTam');
       console.info(url);
