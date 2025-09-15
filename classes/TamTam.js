@@ -41,10 +41,8 @@ class TamTam extends Kubik {
   }
 
   getUrl(urlPath, queryParams, host) {
-    if (!token) token = this.token;
     if (!host) host = this.host;
 
-    if (!token) throw new TypeError('token is not defined');
     if (!host) throw new TypeError('host is not defined');
 
     if (!queryParams) queryParams = {};
